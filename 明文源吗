@@ -9447,8 +9447,15 @@ async function handleProxyOnlyPage(request, url) {
                     targetUrl = 'https://' + targetUrl;
                 }
                 
+                // 获取当前页面的完整路径（包括PROXY_PATH）
+                var currentPath = window.location.pathname;
+                // 移除末尾的斜杠（如果有）
+                if (currentPath.endsWith('/')) {
+                    currentPath = currentPath.slice(0, -1);
+                }
+                
                 var currentOrigin = window.location.origin;
-                var proxyUrl = currentOrigin + '/' + targetUrl;
+                var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
                 window.open(proxyUrl, '_blank');
             }
             
@@ -9469,8 +9476,15 @@ async function handleProxyOnlyPage(request, url) {
                     targetUrl = 'https://' + targetUrl;
                 }
                 
+                // 获取当前页面的完整路径（包括PROXY_PATH）
+                var currentPath = window.location.pathname;
+                // 移除末尾的斜杠（如果有）
+                if (currentPath.endsWith('/')) {
+                    currentPath = currentPath.slice(0, -1);
+                }
+                
                 var currentOrigin = window.location.origin;
-                var proxyUrl = currentOrigin + '/' + targetUrl;
+                var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
                 
                 // 使用 Clipboard API 复制
                 if (navigator.clipboard && navigator.clipboard.writeText) {
