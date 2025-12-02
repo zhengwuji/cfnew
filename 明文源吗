@@ -5690,8 +5690,27 @@ async function handleSubscriptionPage(request, user = null) {
                 currentPath = currentPath.slice(0, -1);
             }
             
+            // 移除UUID部分（如果存在）
+            // UUID格式：xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+            var pathParts = currentPath.split('/').filter(function(part) {
+                return part.length > 0;
+            });
+            
+            // 检查第一部分是否是UUID格式
+            if (pathParts.length > 0) {
+                var firstPart = pathParts[0];
+                var uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                if (uuidRegex.test(firstPart)) {
+                    // 移除UUID部分
+                    pathParts.shift();
+                }
+            }
+            
+            // 重新构建路径（不包含UUID）
+            var pathWithoutUuid = pathParts.length > 0 ? '/' + pathParts.join('/') : '';
+            
             var currentOrigin = window.location.origin;
-            var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
+            var proxyUrl = currentOrigin + pathWithoutUuid + '/' + targetUrl;
             
             // 复制到剪贴板
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -9562,8 +9581,27 @@ async function handleProxyOnlyPage(request, url) {
                     currentPath = currentPath.slice(0, -1);
                 }
                 
+                // 移除UUID部分（如果存在）
+                // UUID格式：xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+                var pathParts = currentPath.split('/').filter(function(part) {
+                    return part.length > 0;
+                });
+                
+                // 检查第一部分是否是UUID格式
+                if (pathParts.length > 0) {
+                    var firstPart = pathParts[0];
+                    var uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                    if (uuidRegex.test(firstPart)) {
+                        // 移除UUID部分
+                        pathParts.shift();
+                    }
+                }
+                
+                // 重新构建路径（不包含UUID）
+                var pathWithoutUuid = pathParts.length > 0 ? '/' + pathParts.join('/') : '';
+                
                 var currentOrigin = window.location.origin;
-                var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
+                var proxyUrl = currentOrigin + pathWithoutUuid + '/' + targetUrl;
                 
                 // 使用 Clipboard API 复制
                 if (navigator.clipboard && navigator.clipboard.writeText) {
