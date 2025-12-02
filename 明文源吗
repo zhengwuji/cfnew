@@ -9525,21 +9525,12 @@ async function handleProxyOnlyPage(request, url) {
         (function() {
             // 独立的代理访问处理函数
             function redirectToProxy(event) {
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                }
-                var targetUrlInput = document.getElementById('targetUrl');
-                if (!targetUrlInput) return;
-                
-                var targetUrl = targetUrlInput.value.trim();
+                event.preventDefault();
+                var targetUrl = document.getElementById('targetUrl').value.trim();
                 if (!targetUrl) {
                     alert('请输入目标网址');
-                    targetUrlInput.focus();
                     return;
                 }
-                
                 var currentOrigin = window.location.origin;
                 var proxyUrl = currentOrigin + '/' + targetUrl;
                 window.open(proxyUrl, '_blank');
