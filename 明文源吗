@@ -3228,6 +3228,12 @@ export default {
                 const normalizedPath = url.pathname.endsWith('/') && url.pathname.length > 1 ? url.pathname.slice(0, -1) : url.pathname;
                 const cleanProxyPath = proxyPathPattern.startsWith('/') ? proxyPathPattern.substring(1) : proxyPathPattern;
                 
+                // 如果访问的是根路径，且设置了 PROXY_PATH，重定向到代理路径
+                if (normalizedPath === '/' || normalizedPath === '') {
+                    const redirectPath = '/' + cleanProxyPath;
+                    return Response.redirect(new URL(redirectPath, url.origin).href, 302);
+                }
+                
                 // 如果设置了自定义路径（cp），需要先验证UUID路径
                 if (cp && cp.trim()) {
                     const cleanCustomPath = cp.trim().startsWith('/') ? cp.trim().substring(1) : cp.trim();
