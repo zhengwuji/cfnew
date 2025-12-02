@@ -3268,10 +3268,10 @@ export default {
                     }
                 } else {
                     // 自定义路径留空时，使用原有逻辑
-                    // 检查路径是否匹配代理路径模式（例如：/test/123）
+                    // 检查路径是否匹配代理路径模式（例如：/111/github.com）
                     if (normalizedPath.startsWith('/' + cleanProxyPath + '/')) {
-                        // 提取代理目标URL（路径中 /test/ 之后的部分）
-                        const targetPath = normalizedPath.substring(cleanProxyPath.length + 2); // +2 因为要去掉开头的 '/' 和 'test/'
+                        // 提取代理目标URL（路径中 /111/ 之后的部分）
+                        const targetPath = normalizedPath.substring(cleanProxyPath.length + 2); // +2 因为要去掉开头的 '/' 和 '111/'
                         if (targetPath) {
                             // 构建代理目标URL
                             let targetUrl = targetPath;
@@ -3279,12 +3279,12 @@ export default {
                             if (!targetUrl.includes('://')) {
                                 targetUrl = 'https://' + targetUrl;
                             }
-                            // 直接跳转到代理访问
+                            // 直接跳转到代理访问，不需要UUID验证
                             return await handleProxyRequest(request, new URL(targetUrl));
                         }
                     }
                     
-                    // 如果路径正好是代理路径（如 /test），且不是订阅路径，返回只显示代理访问功能的页面
+                    // 如果路径正好是代理路径（如 /111），且不是订阅路径，返回只显示代理访问功能的页面
                     if (normalizedPath === '/' + cleanProxyPath) {
                         // 确保不是订阅路径
                         const isSubscriptionPath = (normalizedPath === '/' + at);
@@ -9226,7 +9226,9 @@ async function handleProxyOnlyPage(request, url) {
     // 验证当前路径是否匹配PROXY_PATH，只有匹配时才显示代理访问页面
     const proxyPathPattern = customProxyPath.trim();
     // 规范化路径：移除末尾的斜杠（除非是根路径）
+    // 注意：保留原始路径用于匹配，因为 /111/ 和 /111 都应该匹配
     let normalizedPath = url.pathname;
+    const originalPath = url.pathname;
     if (normalizedPath.endsWith('/') && normalizedPath.length > 1) {
         normalizedPath = normalizedPath.slice(0, -1);
     }
@@ -9257,17 +9259,26 @@ async function handleProxyOnlyPage(request, url) {
             }
         }
     } else {
-        // 没有设置自定义路径，检查路径格式：/{PROXY_PATH} 或 /{UUID}/{PROXY_PATH}
+        // 没有设置自定义路径，检查路径格式：/{PROXY_PATH} 或 /{PROXY_PATH}/目标网站
+        // 注意：根域名/111/ 代理访问不受UUID验证影响，直接允许访问
         if (pathParts.length === 1 && pathParts[0] === cleanProxyPath) {
-            // 路径正好是 /{PROXY_PATH}
+            // 路径正好是 /{PROXY_PATH} 或 /{PROXY_PATH}/，直接允许，不需要UUID验证
+            pathMatches = true;
+        } else if (pathParts.length >= 2 && pathParts[0] === cleanProxyPath) {
+            // 路径格式：/{PROXY_PATH}/目标网站，直接允许，不需要UUID验证
             pathMatches = true;
         } else if (pathParts.length === 2) {
-            // 路径格式：/{UUID}/{PROXY_PATH}
+            // 兼容旧格式：/{UUID}/{PROXY_PATH}（可选，如果用户想用UUID格式也可以）
             const firstPart = pathParts[0];
             const secondPart = pathParts[1];
             if (isValidFormat(firstPart) && firstPart.toLowerCase() === currentAt && secondPart === cleanProxyPath) {
                 pathMatches = true;
             }
+        }
+        
+        // 额外检查：如果原始路径是 /{PROXY_PATH}/（带末尾斜杠），也允许
+        if (!pathMatches && (originalPath === '/' + cleanProxyPath + '/' || originalPath === '/' + cleanProxyPath)) {
+            pathMatches = true;
         }
     }
     
