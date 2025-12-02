@@ -9414,13 +9414,19 @@ async function handleProxyOnlyPage(request, url) {
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
+            min-width: 80px;
         }
         .copy-btn:hover {
             background: rgba(76, 175, 80, 1);
-            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.5);
+            transform: translateY(-2px);
         }
         .copy-btn:active {
             transform: scale(0.98);
+        }
+        .copy-btn.copied {
+            background: rgba(33, 150, 243, 1);
+            border-color: #2196F3;
         }
         small {
             color: #ffffff; font-weight: bold; font-size: 0.85rem; display: block; margin-top: 8px;
@@ -9433,13 +9439,13 @@ async function handleProxyOnlyPage(request, url) {
             <h2 class="card-title">代理访问</h2>
             <form id="urlForm" onsubmit="redirectToProxy(event)" style="margin: 20px 0;">
                 <div style="margin-bottom: 15px;">
-                    <label for="targetUrl" style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold;">目标网址:</label>
+                    <label for="targetUrl" style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold;">目标网址 (TargetUrl):</label>
                     <div class="input-group">
-                        <input type="text" id="targetUrl" placeholder="输入要访问的网址，例如: github.com 或 https://github.com">
-                        <button type="button" id="copyButton" class="copy-btn" title="复制代理链接">复制</button>
+                        <input type="text" id="targetUrl" placeholder="输入要访问的网址，例如: github.com 或 https://github.com" autocomplete="off">
+                        <button type="button" id="copyButton" class="copy-btn" title="复制代理链接">📋 复制</button>
                     </div>
-                    <button type="submit" id="jumpButton" style="margin-top: 10px;">跳转</button>
-                    <small id="proxyHintText">在网址后输入目标网站，例如: ${currentOrigin}/github.com 或 ${currentOrigin}/https://github.com</small>
+                    <button type="submit" id="jumpButton" style="margin-top: 10px;">🚀 跳转访问</button>
+                    <small id="proxyHintText">💡 提示：输入目标网站后，点击"复制"按钮复制代理链接，或点击"跳转访问"直接打开</small>
                 </div>
             </form>
         </div>
@@ -9459,9 +9465,16 @@ async function handleProxyOnlyPage(request, url) {
                 
                 var targetUrl = targetUrlInput.value.trim();
                 if (!targetUrl) {
-                    alert('请输入目标网址');
+                    alert('⚠️ 请输入目标网址');
+                    targetUrlInput.focus();
                     return;
                 }
+                
+                // 如果没有协议，自动添加 https://
+                if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                    targetUrl = 'https://' + targetUrl;
+                }
+                
                 var currentOrigin = window.location.origin;
                 var proxyUrl = currentOrigin + '/' + targetUrl;
                 window.open(proxyUrl, '_blank');
@@ -9474,8 +9487,14 @@ async function handleProxyOnlyPage(request, url) {
                 
                 var targetUrl = targetUrlInput.value.trim();
                 if (!targetUrl) {
-                    alert('请先输入目标网址');
+                    alert('⚠️ 请先输入目标网址');
+                    targetUrlInput.focus();
                     return;
+                }
+                
+                // 如果没有协议，自动添加 https://
+                if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+                    targetUrl = 'https://' + targetUrl;
                 }
                 
                 var currentOrigin = window.location.origin;
@@ -9487,12 +9506,12 @@ async function handleProxyOnlyPage(request, url) {
                         // 显示复制成功提示
                         var copyBtn = document.getElementById('copyButton');
                         if (copyBtn) {
-                            var originalText = copyBtn.textContent;
-                            copyBtn.textContent = '已复制!';
-                            copyBtn.style.background = 'rgba(76, 175, 80, 1)';
+                            var originalText = copyBtn.innerHTML;
+                            copyBtn.innerHTML = '✓ 已复制';
+                            copyBtn.classList.add('copied');
                             setTimeout(function() {
-                                copyBtn.textContent = originalText;
-                                copyBtn.style.background = 'rgba(76, 175, 80, 0.8)';
+                                copyBtn.innerHTML = originalText;
+                                copyBtn.classList.remove('copied');
                             }, 2000);
                         }
                     }).catch(function(err) {
@@ -9520,19 +9539,19 @@ async function handleProxyOnlyPage(request, url) {
                     if (successful) {
                         var copyBtn = document.getElementById('copyButton');
                         if (copyBtn) {
-                            var originalText = copyBtn.textContent;
-                            copyBtn.textContent = '已复制!';
-                            copyBtn.style.background = 'rgba(76, 175, 80, 1)';
+                            var originalText = copyBtn.innerHTML;
+                            copyBtn.innerHTML = '✓ 已复制';
+                            copyBtn.classList.add('copied');
                             setTimeout(function() {
-                                copyBtn.textContent = originalText;
-                                copyBtn.style.background = 'rgba(76, 175, 80, 0.8)';
+                                copyBtn.innerHTML = originalText;
+                                copyBtn.classList.remove('copied');
                             }, 2000);
                         }
                     } else {
-                        alert('复制失败，请手动复制: ' + text);
+                        alert('❌ 复制失败，请手动复制:\n' + text);
                     }
                 } catch (err) {
-                    alert('复制失败，请手动复制: ' + text);
+                    alert('❌ 复制失败，请手动复制:\n' + text);
                 }
                 document.body.removeChild(textArea);
             }
@@ -9543,6 +9562,14 @@ async function handleProxyOnlyPage(request, url) {
             
             // 页面加载完成后，为代理访问输入框添加独立的事件处理
             document.addEventListener('DOMContentLoaded', function() {
+                // 自动聚焦到输入框
+                var targetUrlInput = document.getElementById('targetUrl');
+                if (targetUrlInput) {
+                    setTimeout(function() {
+                        targetUrlInput.focus();
+                    }, 100);
+                }
+                
                 // 绑定复制按钮事件
                 var copyButton = document.getElementById('copyButton');
                 if (copyButton) {
