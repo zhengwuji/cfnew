@@ -5297,21 +5297,6 @@ async function handleSubscriptionPage(request, user = null) {
                 <p class="subtitle">${t.subtitle}</p>
         </div>
         <div class="card">
-                <h2 class="card-title">${t.selectClient}</h2>
-            <div class="client-grid">
-                <button class="client-btn" onclick="generateClientLink(atob('Y2xhc2g='), 'CLASH')">CLASH</button>
-                <button class="client-btn" onclick="generateClientLink(atob('Y2xhc2g='), 'STASH')">STASH</button>
-                <button class="client-btn" onclick="generateClientLink(atob('c3VyZ2U='), 'SURGE')">SURGE</button>
-                <button class="client-btn" onclick="generateClientLink(atob('c2luZ2JveA=='), 'SING-BOX')">SING-BOX</button>
-                <button class="client-btn" onclick="generateClientLink(atob('bG9vbg=='), 'LOON')">LOON</button>
-                <button class="client-btn" onclick="generateClientLink(atob('cXVhbng='), 'QUANTUMULT X')">QUANTUMULT X</button>
-                <button class="client-btn" onclick="generateClientLink(atob('djJyYXk='), 'V2RAY')">V2RAY</button>
-                <button class="client-btn" onclick="generateClientLink(atob('djJyYXk='), 'V2RAYNG')">V2RAYNG</button>
-                <button class="client-btn" onclick="generateClientLink(atob('djJyYXk='), 'NEKORAY')">NEKORAY</button>
-            </div>
-            <div class=atob('c3Vic2NyaXB0aW9uLXVybA==') id="clientSubscriptionUrl"></div>
-        </div>
-        <div class="card">
                 <h2 class="card-title">订阅使用统计</h2>
             <div id="subscriptionStats" style="margin: 20px 0; padding: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; backdrop-filter: blur(10px);">
                     <div style="color: #ffffff; font-weight: bold; margin-bottom: 15px; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1;">[ 加载中... ]</div>
@@ -5327,18 +5312,6 @@ async function handleSubscriptionPage(request, user = null) {
                             <div id="clientDetails" style="display: none; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; margin-top: 10px;"></div>
                         </div>
                     </div>
-            </div>
-        </div>
-        <div class="card">
-                <h2 class="card-title">${t.systemStatus}</h2>
-            <div id="systemStatus" style="margin: 20px 0; padding: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); position: relative; overflow: hidden; backdrop-filter: blur(10px);">
-                    <div style="color: #ffffff; font-weight: bold; margin-bottom: 15px; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1;">[ ${t.checking} ]</div>
-                    <div id="regionStatus" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.workerRegion}${t.checking}</div>
-                    <div id="geoInfo" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 0.9rem; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.detectionMethod}${t.checking}</div>
-                    <div id="backupStatus" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.proxyIPStatus}${t.checking}</div>
-                    <div id="currentIP" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.currentIP}${t.checking}</div>
-                    <div id="regionMatch" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.regionMatch}${t.checking}</div>
-                    <div id="selectionLogic" style="margin: 8px 0; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 0.9rem; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.selectionLogic}${t.selectionLogicText}</div>
             </div>
         </div>
         <div class="card" id="configCard" style="display: none;">
@@ -6188,6 +6161,12 @@ async function handleSubscriptionPage(request, user = null) {
         }
         
         function generateClientLink(clientType, clientName) {
+            // 检查客户端订阅URL元素是否存在，如果不存在则直接返回
+            var urlElement = document.getElementById("clientSubscriptionUrl");
+            if (!urlElement) {
+                return; // 客户端订阅URL元素不存在，直接返回
+            }
+            
             var currentUrl = window.location.href;
             var subscriptionUrl = currentUrl + "/sub";
             var schemeUrl = '';
@@ -6196,7 +6175,6 @@ async function handleSubscriptionPage(request, user = null) {
             
             if (clientType === atob('djJyYXk=')) {
                 finalUrl = subscriptionUrl;
-                var urlElement = document.getElementById("clientSubscriptionUrl");
                 urlElement.textContent = finalUrl;
                 urlElement.style.display = "block";
                 urlElement.style.overflowWrap = "break-word";
@@ -6526,6 +6504,12 @@ async function handleSubscriptionPage(request, user = null) {
         
         async function checkSystemStatus() {
             try {
+                // 检查系统状态元素是否存在，如果不存在则直接返回
+                const systemStatusEl = document.getElementById('systemStatus');
+                if (!systemStatusEl) {
+                    return; // 系统状态元素不存在，直接返回
+                }
+                
                 const cfStatus = document.getElementById('cfStatus');
                 const regionStatus = document.getElementById('regionStatus');
                 const geoInfo = document.getElementById('geoInfo');
@@ -6629,6 +6613,18 @@ async function handleSubscriptionPage(request, user = null) {
                 }
                 
             } catch (error) {
+                    // 检查元素是否存在，如果不存在则直接返回
+                    const regionStatusEl = document.getElementById('regionStatus');
+                    const geoInfoEl = document.getElementById('geoInfo');
+                    const backupStatusEl = document.getElementById('backupStatus');
+                    const currentIPEl = document.getElementById('currentIP');
+                    const regionMatchEl = document.getElementById('regionMatch');
+                    
+                    // 如果系统状态元素不存在，直接返回
+                    if (!regionStatusEl && !geoInfoEl && !backupStatusEl && !currentIPEl && !regionMatchEl) {
+                        return;
+                    }
+                    
                     function getCookie(name) {
                         const value = '; ' + document.cookie;
                         const parts = value.split('; ' + name + '=');
@@ -6645,11 +6641,11 @@ async function handleSubscriptionPage(request, user = null) {
                             detectionFailed: '检测失败'
                         };
                     
-                    document.getElementById('regionStatus').innerHTML = t.workerRegion + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
-                    document.getElementById('geoInfo').innerHTML = t.detectionMethod + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
-                    document.getElementById('backupStatus').innerHTML = t.proxyIPStatus + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
-                    document.getElementById('currentIP').innerHTML = t.currentIP + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
-                    document.getElementById('regionMatch').innerHTML = t.regionMatch + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
+                    if (regionStatusEl) regionStatusEl.innerHTML = t.workerRegion + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
+                    if (geoInfoEl) geoInfoEl.innerHTML = t.detectionMethod + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
+                    if (backupStatusEl) backupStatusEl.innerHTML = t.proxyIPStatus + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
+                    if (currentIPEl) currentIPEl.innerHTML = t.currentIP + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
+                    if (regionMatchEl) regionMatchEl.innerHTML = t.regionMatch + '<span style="color: #ffffff;">❌ ' + t.detectionFailed + '</span>';
             }
         }
         
@@ -7109,7 +7105,10 @@ async function handleSubscriptionPage(request, user = null) {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[DOMContentLoaded] 事件触发');
             // createMatrixRain(); // 已禁用动态背景
-            checkSystemStatus();
+            // 检查系统状态元素是否存在再调用
+            if (document.getElementById('systemStatus')) {
+                checkSystemStatus();
+            }
             loadSubscriptionStats();
             // 每30秒更新一次订阅统计
             setInterval(loadSubscriptionStats, 30000);
