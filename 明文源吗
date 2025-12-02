@@ -9143,6 +9143,11 @@ function showPasswordInputPage(url, isError) {
 
 // 处理测试页面请求
 async function handleProxyOnlyPage(request, url) {
+    // 确保KV配置已加载
+    if (kvStore && Object.keys(kvConfig).length === 0) {
+        await loadKVConfig();
+    }
+    
     // 检查是否设置了PROXY_PATH，如果没有设置则不允许打开代理访问页面
     // 只从KV存储中获取配置，不依赖env参数（因为env在这个函数作用域中不可用）
     const customProxyPath = getConfigValue('PROXY_PATH', '');
@@ -9259,7 +9264,17 @@ async function handleProxyOnlyPage(request, url) {
     
     // 如果路径不匹配PROXY_PATH，返回404
     if (!pathMatches) {
-        return new Response(JSON.stringify({ error: 'Not Found' }), { 
+        // 提供更详细的错误信息帮助调试
+        const errorMessage = {
+            error: 'Not Found',
+            message: '路径不匹配 PROXY_PATH 配置。请检查：',
+            hints: [
+                '1. 确认已正确设置 PROXY_PATH 配置',
+                '2. 访问路径格式应为：/' + (currentCp ? currentAt + '/' + currentCp + '/' : '') + cleanProxyPath,
+                '3. 如果设置了自定义路径(d)，格式应为：/' + currentAt + '/' + currentCp + '/' + cleanProxyPath
+            ]
+        };
+        return new Response(JSON.stringify(errorMessage, null, 2), { 
             status: 404,
             headers: { 'Content-Type': 'application/json' }
         });
