@@ -9535,25 +9535,13 @@ async function handleProxyOnlyPage(request, url) {
                 
                 var targetUrl = targetUrlInput.value.trim();
                 if (!targetUrl) {
-                    alert('⚠️ 请输入目标网址');
+                    alert('请输入目标网址');
                     targetUrlInput.focus();
                     return;
                 }
                 
-                // 如果没有协议，自动添加 https://
-                if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-                    targetUrl = 'https://' + targetUrl;
-                }
-                
-                // 获取当前页面的完整路径（包括PROXY_PATH）
-                var currentPath = window.location.pathname;
-                // 移除末尾的斜杠（如果有）
-                if (currentPath.endsWith('/')) {
-                    currentPath = currentPath.slice(0, -1);
-                }
-                
                 var currentOrigin = window.location.origin;
-                var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
+                var proxyUrl = currentOrigin + '/' + targetUrl;
                 window.open(proxyUrl, '_blank');
             }
             
