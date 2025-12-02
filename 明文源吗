@@ -1,7 +1,7 @@
 import { connect } from 'cloudflare:sockets';
 
 let at = '351c9981-04b6-4103-aa4b-864aa9c91469';
-let fallbackAddress = '';
+let fallbackAddress = 'www.visa.com.sg';  // 使用可靠的回退地址
 let fallbackPort = '443';
 let socks5Config = '';
 let customPreferredIPs = [];
@@ -109,21 +109,20 @@ const regionMapping = {
 };
 
 let backupIPs = [
-    { domain: 'ProxyIP.US.CMLiussss.net', region: 'US', regionCode: 'US', port: 443 },
-    { domain: 'ProxyIP.SG.CMLiussss.net', region: 'SG', regionCode: 'SG', port: 443 },
-    { domain: 'ProxyIP.JP.CMLiussss.net', region: 'JP', regionCode: 'JP', port: 443 },
-    { domain: 'ProxyIP.HK.CMLiussss.net', region: 'HK', regionCode: 'HK', port: 443 },
-    { domain: 'ProxyIP.KR.CMLiussss.net', region: 'KR', regionCode: 'KR', port: 443 },
-    { domain: 'ProxyIP.TW.CMLiussss.net', region: 'TW', regionCode: 'TW', port: 443 },
-    { domain: 'ProxyIP.DE.CMLiussss.net', region: 'DE', regionCode: 'DE', port: 443 },
-    { domain: 'ProxyIP.SE.CMLiussss.net', region: 'SE', regionCode: 'SE', port: 443 },
-    { domain: 'ProxyIP.NL.CMLiussss.net', region: 'NL', regionCode: 'NL', port: 443 },
-    { domain: 'ProxyIP.FI.CMLiussss.net', region: 'FI', regionCode: 'FI', port: 443 },
-    { domain: 'ProxyIP.GB.CMLiussss.net', region: 'GB', regionCode: 'GB', port: 443 },
-    { domain: 'ProxyIP.Oracle.cmliussss.net', region: 'Oracle', regionCode: 'Oracle', port: 443 },
-    { domain: 'ProxyIP.DigitalOcean.CMLiussss.net', region: 'DigitalOcean', regionCode: 'DigitalOcean', port: 443 },
-    { domain: 'ProxyIP.Vultr.CMLiussss.net', region: 'Vultr', regionCode: 'Vultr', port: 443 },
-    { domain: 'ProxyIP.Multacom.CMLiussss.net', region: 'Multacom', regionCode: 'Multacom', port: 443 }
+    // 使用更可靠的 Cloudflare CDN 域名作为备用
+    { domain: 'www.visa.com.sg', region: 'SG', regionCode: 'SG', port: 443 },
+    { domain: 'www.visa.com.hk', region: 'HK', regionCode: 'HK', port: 443 },
+    { domain: 'www.visa.co.jp', region: 'JP', regionCode: 'JP', port: 443 },
+    { domain: 'www.visa.com.tw', region: 'TW', regionCode: 'TW', port: 443 },
+    { domain: 'www.visa.co.kr', region: 'KR', regionCode: 'KR', port: 443 },
+    { domain: 'www.visa.com', region: 'US', regionCode: 'US', port: 443 },
+    { domain: 'www.visa.de', region: 'DE', regionCode: 'DE', port: 443 },
+    { domain: 'www.visa.se', region: 'SE', regionCode: 'SE', port: 443 },
+    { domain: 'www.visa.nl', region: 'NL', regionCode: 'NL', port: 443 },
+    { domain: 'www.visa.fi', region: 'FI', regionCode: 'FI', port: 443 },
+    { domain: 'www.visa.co.uk', region: 'GB', regionCode: 'GB', port: 443 },
+    // 或者使用你自己的代理IP
+    // { domain: 'ProxyIP.US.CMLiussss.net', region: 'US', regionCode: 'US', port: 443 },
 ];
 
 const directDomains = [
