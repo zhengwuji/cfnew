@@ -5328,58 +5328,7 @@ async function handleSubscriptionPage(request, user = null) {
                     <button type="button" id="openImageUploadBtn" style="background: rgba(255, 105, 180, 0.8); border: 1px solid #ff69b4; border-radius: 8px; padding: 10px 18px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; cursor: pointer; text-shadow: none; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);">上传图片</button>
                     <button type="button" id="openFileUploadBtn" style="background: rgba(255, 105, 180, 0.8); border: 1px solid #ff69b4; border-radius: 8px; padding: 10px 18px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; cursor: pointer; text-shadow: none; transition: all 0.3s ease; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);">上传文件</button>
                 </div>
-                <form id="regionForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.specifyRegion}</label>
-                        <select id="wkRegion" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.autoDetect}</option>
-                                <option value="US">${t.regionNames.US}</option>
-                                <option value="SG">${t.regionNames.SG}</option>
-                                <option value="JP">${t.regionNames.JP}</option>
-                                <option value="HK">${t.regionNames.HK}</option>
-                                <option value="KR">${t.regionNames.KR}</option>
-                                <option value="TW">${t.regionNames.TW}</option>
-                                <option value="DE">${t.regionNames.DE}</option>
-                                <option value="SE">${t.regionNames.SE}</option>
-                                <option value="NL">${t.regionNames.NL}</option>
-                                <option value="FI">${t.regionNames.FI}</option>
-                                <option value="GB">${t.regionNames.GB}</option>
-                        </select>
-                            <small id="wkRegionHint" style="color: #ffffff; font-weight: bold; font-size: 0.85rem; display: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">⚠️ ${t.customIPDisabledHint}</small>
-                    </div>
-                        <button type="submit" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 12px 24px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: none; transition: all 0.4s ease; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.saveRegion}</button>
-                </form>
                 <form id="otherConfigForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.protocolSelection}</label>
-                        <div style="padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid #ffffff; border-radius: 8px; backdrop-filter: blur(10px);">
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">
-                                    <input type="checkbox" id="ev" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.enableVLESS}</span>
-                                </label>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">
-                                    <input type="checkbox" id="et" style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.enableTrojan}</span>
-                                </label>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">
-                                    <input type="checkbox" id="ex" style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.enableXhttp}</span>
-                                </label>
-                            </div>
-                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid transparent;">
-                                    <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; font-size: 0.95rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.trojanPassword}</label>
-                                    <input type="text" id="tp" placeholder="${t.trojanPasswordPlaceholder}" style="width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 13px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                    <small style="color: #ffffff; font-weight: bold; font-size: 0.8rem; display: block; margin-top: 5px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.trojanPasswordHint}</small>
-                            </div>
-                                <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; display: block; margin-top: 10px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.protocolHint}</small>
-                                <button type="button" id="saveProtocolBtn" style="margin-top: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 10px 20px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: none; transition: all 0.4s ease; width: 100%; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.saveProtocol}</button>
-                        </div>
-                    </div>
                     <div style="margin-bottom: 15px;">
                             <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.customHomepage}</label>
                             <input type="text" id="customHomepage" placeholder="${t.customHomepagePlaceholder}" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
@@ -5394,154 +5343,8 @@ async function handleSubscriptionPage(request, user = null) {
                             </div>
                             <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1; display: block; margin-top: 8px;">${t.customBackgroundImageHint}</small>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.customPath}</label>
-                            <input type="text" id="customPath" placeholder="例如: /mypath 或留空使用 UUID" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">自定义订阅路径。留空则使用 UUID 作为路径。</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.customIP}</label>
-                            <div style="display: flex; gap: 10px; align-items: flex-end;">
-                                <input type="text" id="customIP" placeholder="例如: 1.2.3.4:443" style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            </div>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1; display: block; margin-top: 8px;">自定义ProxyIP地址和端口</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.preferredIPs}</label>
-                            <input type="text" id="preferredIPs" placeholder="例如: 1.2.3.4:443#香港节点,5.6.7.8:80#美国节点,example.com:8443#新加坡节点,1.1.1.1:443#台湾节点" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">格式: IP:端口#节点名称 或 IP:端口 (无#则使用默认名称)。支持多个，用逗号分隔。<span style="color: #ffffff; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">API添加的IP会自动显示在这里。</span></small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.preferredIPsURL}</label>
-                            <input type="text" id="preferredIPsURL" placeholder="默认: https://raw.githubusercontent.com/qwer-search/bestip/refs/heads/main/kejilandbestip.txt" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">自定义优选IP列表来源URL，留空则使用默认地址</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.socks5Config}</label>
-                            <input type="text" id="socksConfig" placeholder="例如: user:pass@host:port 或 host:port" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">SOCKS5代理地址（用于特定协议），用于出站所有流量功能</small>
-                    </div>
                         <button type="submit" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 12px 24px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: none; transition: all 0.4s ease; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.saveConfig}</button>
                 </form>
-                
-                    <h3 style="color: #ffffff; margin: 20px 0 15px 0; font-size: 1.2rem;">${t.advancedControl}</h3>
-                <form id="advancedConfigForm" style="margin-bottom: 20px;">
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.subscriptionConverter}</label>
-                            <input type="text" id="scu" placeholder="${t.subscriptionConverterPlaceholder}" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.subscriptionConverterHint}</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.builtinPreferred}</label>
-                        <div style="padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid #ffffff; border-radius: 8px; backdrop-filter: blur(10px);">
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                    <input type="checkbox" id="epd" style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem;">${t.enablePreferredDomain}</span>
-                                </label>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                    <input type="checkbox" id="epi" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem;">${t.enablePreferredIP}</span>
-                                </label>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                    <input type="checkbox" id="egi" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1.1rem;">${t.enableGitHubPreferred}</span>
-                                </label>
-                            </div>
-                                <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; display: block; margin-top: 10px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.builtinPreferredHint}</small>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">优选IP筛选设置</label>
-                        <div style="padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid #ffffff; border-radius: 8px; backdrop-filter: blur(10px);">
-                            <div style="margin-bottom: 15px;">
-                                <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">IP版本选择</label>
-                                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                                    <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                        <input type="checkbox" id="ipv4Enabled" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1rem;">IPv4</span>
-                                    </label>
-                                    <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                        <input type="checkbox" id="ipv6Enabled" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1rem;">IPv6</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 10px;">
-                                <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">运营商选择</label>
-                                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                                    <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                        <input type="checkbox" id="ispMobile" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1rem;">移动</span>
-                                    </label>
-                                    <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                        <input type="checkbox" id="ispUnicom" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1rem;">联通</span>
-                                    </label>
-                                    <label style="display: inline-flex; align-items: center; cursor: pointer; color: #ffffff; font-weight: bold;">
-                                        <input type="checkbox" id="ispTelecom" checked style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
-                                        <span style="font-size: 1rem;">电信</span>
-                                    </label>
-                                </div>
-                            </div>
-                                <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; display: block; margin-top: 10px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">选择要使用的IP版本和运营商，未选中的将被过滤</small>
-                        </div>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.allowAPIManagement}</label>
-                        <select id="apiEnabled" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.apiEnabledDefault}</option>
-                                <option value="yes">${t.apiEnabledYes}</option>
-                        </select>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">${t.apiEnabledHint}</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.regionMatching}</label>
-                        <select id="regionMatching" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.regionMatchingDefault}</option>
-                                <option value="no">${t.regionMatchingNo}</option>
-                        </select>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem;">${t.regionMatchingHint}</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.downgradeControl}</label>
-                        <select id="downgradeControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.downgradeControlDefault}</option>
-                                <option value="no">${t.downgradeControlNo}</option>
-                        </select>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem;">${t.downgradeControlHint}</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.tlsControl}</label>
-                        <select id="portControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.tlsControlDefault}</option>
-                                <option value="yes">${t.tlsControlYes}</option>
-                        </select>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem;">${t.tlsControlHint}</small>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                            <label style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">${t.preferredControl}</label>
-                        <select id="preferredControl" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
-                                <option value="">${t.preferredControlDefault}</option>
-                                <option value="yes">${t.preferredControlYes}</option>
-                        </select>
-                            <small style="color: #ffffff; font-weight: bold; font-size: 0.85rem;">${t.preferredControlHint}</small>
-                    </div>
-                        <button type="submit" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 12px 24px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: none; transition: all 0.4s ease; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.saveAdvanced}</button>
-                </form>
-                <div id="currentConfig" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 15px; margin: 10px 0; font-family: 'Courier New', monospace; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1; backdrop-filter: blur(10px);">
-                        ${t.loading}
-                </div>
-                <div id="pathTypeInfo" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 15px; margin: 10px 0; font-family: 'Courier New', monospace; color: #ffffff; font-weight: bold; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1; backdrop-filter: blur(10px);">
-                        <div style="font-weight: bold; margin-bottom: 8px; color: #ffffff; text-shadow: none;">${t.currentConfig}</div>
-                        <div id="pathTypeStatus">${t.checking}</div>
-                </div>
-                    <button onclick="loadCurrentConfig()" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 12px 24px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; margin-right: 10px; text-shadow: none; transition: all 0.4s ease; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.refreshConfig}</button>
-                    <button onclick="resetAllConfig()" style="background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; padding: 12px 24px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: none; transition: all 0.4s ease; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);">${t.resetConfig}</button>
             </div>
             <div id="statusMessage" style="display: none; padding: 10px; margin: 10px 0; border: 1px solid #ffffff; border-radius: 8px; background: rgba(0, 0, 0, 0.6); color: #ffffff; text-shadow: none; backdrop-filter: blur(10px);"></div>
         </div>
@@ -5577,13 +5380,6 @@ async function handleSubscriptionPage(request, user = null) {
             </div>
         </div>
         
-        <div class="card">
-                <h2 class="card-title">${t.relatedLinks}</h2>
-            <div style="text-align: center; margin: 20px 0;">
-                    <a href="https://github.com/byJoey/cfnew" target="_blank" style="color: #ffffff; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1;">${t.githubProject}</a>
-                <a href="https://www.youtube.com/@joeyblog" target="_blank" style="color: #ffffff; text-decoration: none; margin: 0 20px; font-size: 1.2rem; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1;">YouTube @joeyblog</a>
-            </div>
-        </div>
     </div>
     <div class="upload-panel-overlay" id="uploadPanelOverlay">
         <div class="upload-panel">
@@ -6716,7 +6512,8 @@ async function handleSubscriptionPage(request, user = null) {
                         document.getElementById('kvStatus').innerHTML = '<span style="color: #ffffff;">' + t.kvDisabled + '</span>';
                         document.getElementById('kvUsage').style.display = 'none';
                         document.getElementById('configCard').style.display = 'block';
-                        document.getElementById('currentConfig').textContent = t.kvNotConfigured;
+                        const currentConfigEl = document.getElementById('currentConfig');
+                        if (currentConfigEl) currentConfigEl.textContent = t.kvNotConfigured;
                 } else if (response.ok) {
                     try {
                     const data = await response.json();
@@ -6732,19 +6529,22 @@ async function handleSubscriptionPage(request, user = null) {
                             document.getElementById('kvStatus').innerHTML = '<span style="color: #ffffff;">' + t.kvDisabled + '</span>';
                             document.getElementById('kvUsage').style.display = 'none';
                             document.getElementById('configCard').style.display = 'block';
-                            document.getElementById('currentConfig').textContent = t.kvNotEnabled;
+                            const currentConfigEl = document.getElementById('currentConfig');
+                            if (currentConfigEl) currentConfigEl.textContent = t.kvNotEnabled;
                             }
                     } catch (jsonError) {
                         document.getElementById('kvStatus').innerHTML = '<span style="color: #ffffff;">' + t.kvCheckFailed + '</span>';
                         document.getElementById('kvUsage').style.display = 'none';
                         document.getElementById('configCard').style.display = 'block';
-                        document.getElementById('currentConfig').textContent = t.kvCheckFailedFormat;
+                        const currentConfigEl = document.getElementById('currentConfig');
+                        if (currentConfigEl) currentConfigEl.textContent = t.kvCheckFailedFormat;
                     }
                 } else {
                     document.getElementById('kvStatus').innerHTML = '<span style="color: #ffffff;">' + t.kvDisabled + '</span>';
                     document.getElementById('kvUsage').style.display = 'none';
                     document.getElementById('configCard').style.display = 'block';
-                    document.getElementById('currentConfig').textContent = t.kvCheckFailedStatus + response.status;
+                    const currentConfigEl = document.getElementById('currentConfig');
+                    if (currentConfigEl) currentConfigEl.textContent = t.kvCheckFailedStatus + response.status;
                 }
             } catch (error) {
                 function getCookie(name) {
@@ -6757,7 +6557,8 @@ async function handleSubscriptionPage(request, user = null) {
                 document.getElementById('kvStatus').innerHTML = '<span style="color: #ffffff;">⚠️ KV存储未启用或未配置</span>';
                 document.getElementById('kvUsage').style.display = 'none';
                 document.getElementById('configCard').style.display = 'block';
-                document.getElementById('currentConfig').textContent = 'KV存储检测失败 - 错误: ' + error.message;
+                const currentConfigEl = document.getElementById('currentConfig');
+                if (currentConfigEl) currentConfigEl.textContent = 'KV存储检测失败 - 错误: ' + error.message;
             }
         }
         
@@ -6855,44 +6656,70 @@ async function handleSubscriptionPage(request, user = null) {
                     currentConfigElement.textContent = configText;
                 }
                 
-                // 更新表单值
-                document.getElementById('wkRegion').value = config.wk || '';
-                document.getElementById('ev').checked = config.ev !== 'no';
-                document.getElementById('et').checked = config.et === 'yes';
-                document.getElementById('ex').checked = config.ex === 'yes';
-                document.getElementById('tp').value = config.tp || '';
-                document.getElementById('scu').value = config.scu || '';
-                document.getElementById('epd').checked = config.epd !== 'no';
-                document.getElementById('epi').checked = config.epi !== 'no';
-                document.getElementById('egi').checked = config.egi !== 'no';
+                // 更新表单值（只更新存在的元素）
+                const wkRegionEl = document.getElementById('wkRegion');
+                if (wkRegionEl) wkRegionEl.value = config.wk || '';
+                const evEl = document.getElementById('ev');
+                if (evEl) evEl.checked = config.ev !== 'no';
+                const etEl = document.getElementById('et');
+                if (etEl) etEl.checked = config.et === 'yes';
+                const exEl = document.getElementById('ex');
+                if (exEl) exEl.checked = config.ex === 'yes';
+                const tpEl = document.getElementById('tp');
+                if (tpEl) tpEl.value = config.tp || '';
+                const scuEl = document.getElementById('scu');
+                if (scuEl) scuEl.value = config.scu || '';
+                const epdEl = document.getElementById('epd');
+                if (epdEl) epdEl.checked = config.epd !== 'no';
+                const epiEl = document.getElementById('epi');
+                if (epiEl) epiEl.checked = config.epi !== 'no';
+                const egiEl = document.getElementById('egi');
+                if (egiEl) egiEl.checked = config.egi !== 'no';
                 if (document.getElementById('ipv4Enabled')) document.getElementById('ipv4Enabled').checked = config.ipv4 !== 'no';
                 if (document.getElementById('ipv6Enabled')) document.getElementById('ipv6Enabled').checked = config.ipv6 !== 'no';
                 if (document.getElementById('ispMobile')) document.getElementById('ispMobile').checked = config.ispMobile !== 'no';
                 if (document.getElementById('ispUnicom')) document.getElementById('ispUnicom').checked = config.ispUnicom !== 'no';
                 if (document.getElementById('ispTelecom')) document.getElementById('ispTelecom').checked = config.ispTelecom !== 'no';
-                document.getElementById('customPath').value = config.d || '';
-                document.getElementById('customProxyPath').value = config.PROXY_PATH || config.proxy_path || '';
+                const customPathEl = document.getElementById('customPath');
+                if (customPathEl) customPathEl.value = config.d || '';
+                const customProxyPathEl = document.getElementById('customProxyPath');
+                if (customProxyPathEl) customProxyPathEl.value = config.PROXY_PATH || config.proxy_path || '';
                 var proxyAccessPasswordInput = document.getElementById('proxyAccessPassword');
                 if (proxyAccessPasswordInput) {
                     proxyAccessPasswordInput.value = config.PROXY_PASSWORD || config.proxy_password || '';
                 }
-                document.getElementById('customIP').value = config.p || '';
-                document.getElementById('preferredIPs').value = config.yx || '';
-                document.getElementById('preferredIPsURL').value = config.yxURL || '';
-                document.getElementById('socksConfig').value = config.s || '';
-                document.getElementById('customHomepage').value = config.homepage || '';
-                document.getElementById('customBackgroundImage').value = config.bg || '';
-                document.getElementById('apiEnabled').value = config.ae || '';
-                document.getElementById('regionMatching').value = config.rm || '';
-                document.getElementById('downgradeControl').value = config.qj || '';
-                document.getElementById('portControl').value = config.dkby || '';
-                document.getElementById('preferredControl').value = config.yxby || '';
+                const customIPEl = document.getElementById('customIP');
+                if (customIPEl) customIPEl.value = config.p || '';
+                const preferredIPsEl = document.getElementById('preferredIPs');
+                if (preferredIPsEl) preferredIPsEl.value = config.yx || '';
+                const preferredIPsURLEl = document.getElementById('preferredIPsURL');
+                if (preferredIPsURLEl) preferredIPsURLEl.value = config.yxURL || '';
+                const socksConfigEl = document.getElementById('socksConfig');
+                if (socksConfigEl) socksConfigEl.value = config.s || '';
+                const customHomepageEl = document.getElementById('customHomepage');
+                if (customHomepageEl) customHomepageEl.value = config.homepage || '';
+                const customBackgroundImageEl = document.getElementById('customBackgroundImage');
+                if (customBackgroundImageEl) customBackgroundImageEl.value = config.bg || '';
+                const apiEnabledEl = document.getElementById('apiEnabled');
+                if (apiEnabledEl) apiEnabledEl.value = config.ae || '';
+                const regionMatchingEl = document.getElementById('regionMatching');
+                if (regionMatchingEl) regionMatchingEl.value = config.rm || '';
+                const downgradeControlEl = document.getElementById('downgradeControl');
+                if (downgradeControlEl) downgradeControlEl.value = config.qj || '';
+                const portControlEl = document.getElementById('portControl');
+                if (portControlEl) portControlEl.value = config.dkby || '';
+                const preferredControlEl = document.getElementById('preferredControl');
+                if (preferredControlEl) preferredControlEl.value = config.yxby || '';
                 
-                // 更新路径类型显示
-                updatePathTypeStatus(config.d);
+                // 更新路径类型显示（如果函数存在）
+                if (typeof updatePathTypeStatus === 'function') {
+                    updatePathTypeStatus(config.d);
+                }
                 
-                // 检查p变量，如果有值则禁用wk地区选择
-                updateWkRegionState();
+                // 检查p变量，如果有值则禁用wk地区选择（如果函数存在）
+                if (typeof updateWkRegionState === 'function') {
+                    updateWkRegionState();
+                }
                 
                 // 显示成功提示
                 showStatus('配置已刷新', 'success');
@@ -7158,24 +6985,41 @@ async function handleSubscriptionPage(request, user = null) {
             if (otherConfigForm) {
                 otherConfigForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    const configData = { ev: document.getElementById('ev').checked ? 'yes' : 'no', et: document.getElementById('et').checked ? 'yes' : 'no', ex: document.getElementById('ex').checked ? 'yes' : 'no', tp: document.getElementById('tp').value,
-                        d: document.getElementById('customPath').value,
-                        PROXY_PATH: document.getElementById('customProxyPath').value,
-                        PROXY_PASSWORD: document.getElementById('proxyAccessPassword') ? document.getElementById('proxyAccessPassword').value : '',
-                        p: document.getElementById('customIP').value,
-                        yx: document.getElementById('preferredIPs').value,
-                        yxURL: document.getElementById('preferredIPsURL').value,
-                        s: document.getElementById('socksConfig').value,
-                        homepage: document.getElementById('customHomepage').value,
-                        bg: document.getElementById('customBackgroundImage').value
+                    const evEl = document.getElementById('ev');
+                    const etEl = document.getElementById('et');
+                    const exEl = document.getElementById('ex');
+                    const configData = { 
+                        homepage: document.getElementById('customHomepage') ? document.getElementById('customHomepage').value : '',
+                        bg: document.getElementById('customBackgroundImage') ? document.getElementById('customBackgroundImage').value : ''
                     };
                     
-                    // 确保至少选择一个协议
-                    if (!document.getElementById('ev').checked && 
-                        !document.getElementById('et').checked && 
-                        !document.getElementById('ex').checked) {
-                        alert('至少需要启用一个协议！');
-                        return;
+                    // 只添加存在的元素的值
+                    if (evEl) configData.ev = evEl.checked ? 'yes' : 'no';
+                    if (etEl) configData.et = etEl.checked ? 'yes' : 'no';
+                    if (exEl) configData.ex = exEl.checked ? 'yes' : 'no';
+                    const tpEl = document.getElementById('tp');
+                    if (tpEl) configData.tp = tpEl.value;
+                    const customPathEl = document.getElementById('customPath');
+                    if (customPathEl) configData.d = customPathEl.value;
+                    const customProxyPathEl = document.getElementById('customProxyPath');
+                    if (customProxyPathEl) configData.PROXY_PATH = customProxyPathEl.value;
+                    const proxyAccessPasswordEl = document.getElementById('proxyAccessPassword');
+                    if (proxyAccessPasswordEl) configData.PROXY_PASSWORD = proxyAccessPasswordEl.value;
+                    const customIPEl = document.getElementById('customIP');
+                    if (customIPEl) configData.p = customIPEl.value;
+                    const preferredIPsEl = document.getElementById('preferredIPs');
+                    if (preferredIPsEl) configData.yx = preferredIPsEl.value;
+                    const preferredIPsURLEl = document.getElementById('preferredIPsURL');
+                    if (preferredIPsURLEl) configData.yxURL = preferredIPsURLEl.value;
+                    const socksConfigEl = document.getElementById('socksConfig');
+                    if (socksConfigEl) configData.s = socksConfigEl.value;
+                    
+                    // 确保至少选择一个协议（如果协议选择元素存在）
+                    if (evEl && etEl && exEl) {
+                        if (!evEl.checked && !etEl.checked && !exEl.checked) {
+                            alert('至少需要启用一个协议！');
+                            return;
+                        }
                     }
                     
                     await saveConfig(configData);
