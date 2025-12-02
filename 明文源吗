@@ -9219,20 +9219,25 @@ async function handleProxyOnlyPage(request, url) {
     
     // 验证当前路径是否匹配PROXY_PATH，只有匹配时才显示代理访问页面
     const proxyPathPattern = customProxyPath.trim();
-    const normalizedPath = url.pathname.endsWith('/') && url.pathname.length > 1 ? url.pathname.slice(0, -1) : url.pathname;
+    // 规范化路径：移除末尾的斜杠（除非是根路径）
+    let normalizedPath = url.pathname;
+    if (normalizedPath.endsWith('/') && normalizedPath.length > 1) {
+        normalizedPath = normalizedPath.slice(0, -1);
+    }
+    // 清理 PROXY_PATH：移除开头的斜杠
     const cleanProxyPath = proxyPathPattern.startsWith('/') ? proxyPathPattern.substring(1) : proxyPathPattern;
     
     // 获取自定义路径和UUID（从全局变量获取，这些变量在fetch函数中已设置）
     // 如果全局变量未设置，从配置中获取
-    const currentCp = (typeof cp !== 'undefined' && cp) ? cp : getConfigValue('d', '');
-    const currentAt = (typeof at !== 'undefined' && at) ? at.toLowerCase() : getConfigValue('u', '').toLowerCase();
+    const currentCp = (typeof cp !== 'undefined' && cp && cp.trim()) ? cp.trim() : (getConfigValue('d', '') || '').trim();
+    const currentAt = (typeof at !== 'undefined' && at) ? at.toLowerCase() : (getConfigValue('u', '') || '').toLowerCase();
     
     let pathMatches = false;
+    const pathParts = normalizedPath.substring(1).split('/').filter(p => p); // 过滤空字符串
     
     // 如果设置了自定义路径（cp），需要检查路径格式：/{UUID}/{自定义路径}/{PROXY_PATH}
-    if (currentCp && currentCp.trim()) {
-        const cleanCustomPath = currentCp.trim().startsWith('/') ? currentCp.trim().substring(1) : currentCp.trim();
-        const pathParts = normalizedPath.substring(1).split('/');
+    if (currentCp && currentCp.length > 0) {
+        const cleanCustomPath = currentCp.startsWith('/') ? currentCp.substring(1) : currentCp;
         
         // 路径必须是：/{UUID}/{自定义路径}/{PROXY_PATH}
         if (pathParts.length >= 3) {
@@ -9241,14 +9246,12 @@ async function handleProxyOnlyPage(request, url) {
             const thirdPart = pathParts[2];
             
             // 验证：第一部分是UUID，第二部分是自定义路径，第三部分是PROXY_PATH
-            if (isValidFormat(firstPart) && firstPart === currentAt && secondPart === cleanCustomPath && thirdPart === cleanProxyPath) {
+            if (isValidFormat(firstPart) && firstPart.toLowerCase() === currentAt && secondPart === cleanCustomPath && thirdPart === cleanProxyPath) {
                 pathMatches = true;
             }
         }
     } else {
         // 没有设置自定义路径，检查路径格式：/{PROXY_PATH} 或 /{UUID}/{PROXY_PATH}
-        const pathParts = normalizedPath.substring(1).split('/');
-        
         if (pathParts.length === 1 && pathParts[0] === cleanProxyPath) {
             // 路径正好是 /{PROXY_PATH}
             pathMatches = true;
@@ -9256,7 +9259,7 @@ async function handleProxyOnlyPage(request, url) {
             // 路径格式：/{UUID}/{PROXY_PATH}
             const firstPart = pathParts[0];
             const secondPart = pathParts[1];
-            if (isValidFormat(firstPart) && firstPart === currentAt && secondPart === cleanProxyPath) {
+            if (isValidFormat(firstPart) && firstPart.toLowerCase() === currentAt && secondPart === cleanProxyPath) {
                 pathMatches = true;
             }
         }
@@ -9265,13 +9268,24 @@ async function handleProxyOnlyPage(request, url) {
     // 如果路径不匹配PROXY_PATH，返回404
     if (!pathMatches) {
         // 提供更详细的错误信息帮助调试
+        // 构建正确的路径格式提示
+        let correctPathFormat = '';
+        if (currentCp && currentCp.length > 0) {
+            correctPathFormat = '/' + currentAt + '/' + currentCp + '/' + cleanProxyPath;
+        } else {
+            correctPathFormat = '/' + cleanProxyPath + ' 或 /' + currentAt + '/' + cleanProxyPath;
+        }
+        
         const errorMessage = {
             error: 'Not Found',
             message: '路径不匹配 PROXY_PATH 配置。请检查：',
             hints: [
                 '1. 确认已正确设置 PROXY_PATH 配置',
-                '2. 访问路径格式应为：/' + (currentCp ? currentAt + '/' + currentCp + '/' : '') + cleanProxyPath,
-                '3. 如果设置了自定义路径(d)，格式应为：/' + currentAt + '/' + currentCp + '/' + cleanProxyPath
+                '2. 当前访问路径：' + url.pathname,
+                '3. 正确的访问路径格式应为：' + correctPathFormat,
+                '4. PROXY_PATH 配置值：' + cleanProxyPath,
+                '5. UUID：' + (currentAt || '(未设置)'),
+                '6. 自定义路径(d)：' + (currentCp || '(未设置)')
             ]
         };
         return new Response(JSON.stringify(errorMessage, null, 2), { 
