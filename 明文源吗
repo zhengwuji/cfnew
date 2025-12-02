@@ -5580,6 +5580,7 @@ async function handleSubscriptionPage(request, user = null) {
                     <label for="targetUrl" style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold; text-shadow: none; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision;">目标网址 (TargetUrl):</label>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
                         <input type="text" id="targetUrl" placeholder="输入要访问的网址，例如: github.com 或 https://github.com" style="flex: 1; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; backdrop-filter: blur(10px);">
+                        <button type="button" id="copyProxyUrlBtn" onclick="copyProxyUrl()" style="padding: 12px 24px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: none; transition: all 0.4s ease; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); white-space: nowrap;">复制</button>
                         <button type="submit" id="jumpButton" style="padding: 12px 24px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; text-shadow: none; transition: all 0.4s ease; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; opacity: 1; backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); white-space: nowrap;">跳转</button>
                     </div>
                     <small id="proxyHintText" style="color: #ffffff; font-weight: bold; font-size: 0.85rem; display: block; margin-top: 8px; -webkit-font-smoothing: subpixel-antialiased; -moz-osx-font-smoothing: auto; text-rendering: geometricPrecision; text-shadow: none; opacity: 1;">在网址后输入目标网站，例如: /github.com 或 /https://github.com</small>
@@ -5669,6 +5670,84 @@ async function handleSubscriptionPage(request, user = null) {
             var currentOrigin = window.location.origin;
             var proxyUrl = currentOrigin + '/' + targetUrl;
             window.open(proxyUrl, '_blank');
+        }
+        
+        function copyProxyUrl() {
+            var targetUrlInput = document.getElementById('targetUrl');
+            if (!targetUrlInput) return;
+            
+            var targetUrl = targetUrlInput.value.trim();
+            if (!targetUrl) {
+                alert('⚠️ 请先输入目标网址');
+                targetUrlInput.focus();
+                return;
+            }
+            
+            // 获取当前页面的完整路径（包括PROXY_PATH）
+            var currentPath = window.location.pathname;
+            // 移除末尾的斜杠（如果有）
+            if (currentPath.endsWith('/')) {
+                currentPath = currentPath.slice(0, -1);
+            }
+            
+            var currentOrigin = window.location.origin;
+            var proxyUrl = currentOrigin + currentPath + '/' + targetUrl;
+            
+            // 复制到剪贴板
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(proxyUrl).then(function() {
+                    // 复制成功，显示提示
+                    var copyBtn = document.getElementById('copyProxyUrlBtn');
+                    if (copyBtn) {
+                        var originalText = copyBtn.textContent;
+                        copyBtn.textContent = '已复制!';
+                        copyBtn.style.background = 'rgba(76, 175, 80, 0.8)';
+                        setTimeout(function() {
+                            copyBtn.textContent = originalText;
+                            copyBtn.style.background = 'rgba(0, 0, 0, 0.6)';
+                        }, 2000);
+                    }
+                }).catch(function(err) {
+                    console.error('复制失败:', err);
+                    // 降级方案：使用传统方法
+                    fallbackCopyTextToClipboard(proxyUrl);
+                });
+            } else {
+                // 降级方案：使用传统方法
+                fallbackCopyTextToClipboard(proxyUrl);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            var textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    var copyBtn = document.getElementById('copyProxyUrlBtn');
+                    if (copyBtn) {
+                        var originalText = copyBtn.textContent;
+                        copyBtn.textContent = '已复制!';
+                        copyBtn.style.background = 'rgba(76, 175, 80, 0.8)';
+                        setTimeout(function() {
+                            copyBtn.textContent = originalText;
+                            copyBtn.style.background = 'rgba(0, 0, 0, 0.6)';
+                        }, 2000);
+                    }
+                } else {
+                    alert('复制失败，请手动复制: ' + text);
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制: ' + text);
+            }
+            document.body.removeChild(textArea);
         }
         
         function openTestPage() {
