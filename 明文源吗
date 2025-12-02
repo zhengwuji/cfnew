@@ -9284,30 +9284,9 @@ async function handleProxyOnlyPage(request, url) {
     
     // 如果路径不匹配PROXY_PATH，返回404
     if (!pathMatches) {
-        // 提供更详细的错误信息帮助调试
-        // 构建正确的路径格式提示
-        let correctPathFormat = '';
-        if (currentCp && currentCp.length > 0) {
-            correctPathFormat = '/' + currentAt + '/' + currentCp + '/' + cleanProxyPath;
-        } else {
-            correctPathFormat = '/' + cleanProxyPath + ' 或 /' + currentAt + '/' + cleanProxyPath;
-        }
-        
-        const errorMessage = {
-            error: 'Not Found',
-            message: '路径不匹配 PROXY_PATH 配置。请检查：',
-            hints: [
-                '1. 确认已正确设置 PROXY_PATH 配置',
-                '2. 当前访问路径：' + url.pathname,
-                '3. 正确的访问路径格式应为：' + correctPathFormat,
-                '4. PROXY_PATH 配置值：' + cleanProxyPath,
-                '5. UUID：' + (currentAt || '(未设置)'),
-                '6. 自定义路径(d)：' + (currentCp || '(未设置)')
-            ]
-        };
-        return new Response(JSON.stringify(errorMessage, null, 2), { 
+        return new Response('Not Found', { 
             status: 404,
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'text/plain' }
         });
     }
     
@@ -9395,16 +9374,12 @@ async function handleProxyOnlyPage(request, url) {
             background: rgba(0, 0, 0, 0.7);
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
         }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .input-group input {
-            flex: 1;
+        #jumpButton:hover {
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
         }
         .copy-btn {
-            padding: 12px 20px;
+            padding: 12px 24px;
             background: rgba(76, 175, 80, 0.8);
             border: 1px solid #4caf50;
             border-radius: 8px;
@@ -9413,8 +9388,7 @@ async function handleProxyOnlyPage(request, url) {
             font-family: "Courier New", monospace;
             cursor: pointer;
             transition: all 0.3s ease;
-            white-space: nowrap;
-            min-width: 80px;
+            border: none;
         }
         .copy-btn:hover {
             background: rgba(76, 175, 80, 1);
@@ -9440,11 +9414,9 @@ async function handleProxyOnlyPage(request, url) {
             <form id="urlForm" onsubmit="redirectToProxy(event)" style="margin: 20px 0;">
                 <div style="margin-bottom: 15px;">
                     <label for="targetUrl" style="display: block; margin-bottom: 8px; color: #ffffff; font-weight: bold;">目标网址 (TargetUrl):</label>
-                    <div class="input-group">
-                        <input type="text" id="targetUrl" placeholder="输入要访问的网址，例如: github.com 或 https://github.com" autocomplete="off">
-                        <button type="button" id="copyButton" class="copy-btn" title="复制代理链接">📋 复制</button>
-                    </div>
-                    <button type="submit" id="jumpButton" style="margin-top: 10px;">🚀 跳转访问</button>
+                    <input type="text" id="targetUrl" placeholder="输入要访问的网址，例如: github.com 或 https://github.com" autocomplete="off" style="width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 14px; margin-bottom: 10px;">
+                    <button type="submit" id="jumpButton" style="width: 100%; padding: 12px 24px; background: rgba(0, 0, 0, 0.6); border: 1px solid #ffffff; border-radius: 8px; color: #ffffff; font-weight: bold; font-family: 'Courier New', monospace; cursor: pointer; transition: all 0.4s ease; margin-bottom: 10px;">🚀 跳转访问</button>
+                    <button type="button" id="copyButton" class="copy-btn" title="复制代理链接" style="width: 100%;">📋 复制</button>
                     <small id="proxyHintText">💡 提示：输入目标网站后，点击"复制"按钮复制代理链接，或点击"跳转访问"直接打开</small>
                 </div>
             </form>
