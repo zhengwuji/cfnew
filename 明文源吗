@@ -3892,35 +3892,36 @@ async function handleWsRequest(request) {
             }
             
             if (!protocolType) {
+                
                 if (ev && chunk.byteLength >= 24) {
                     const vlessResult = parseWsPacketHeader(chunk, at);
                     if (!vlessResult.hasError) {
                         protocolType = 'vless';
                         const { addressType, port, hostname, rawIndex, version, isUDP } = vlessResult;
-            if (isUDP) {
-                if (port === 53) isDnsQuery = true;
-                else throw new Error(E_UDP_DNS_ONLY);
-            }
-            const respHeader = new Uint8Array([version[0], 0]);
-            const rawData = chunk.slice(rawIndex);
-            if (isDnsQuery) return forwardUDP(rawData, serverSock, respHeader);
-            await forwardTCP(addressType, hostname, port, rawData, serverSock, respHeader, remoteConnWrapper);
-                        return;
-                    }
+                if (isUDP) {
+                    if (port === 53) isDnsQuery = true;
+                    else throw new Error(E_UDP_DNS_ONLY);
                 }
-                
-                if (et && chunk.byteLength >= 56) {
-                    const tjResult = await parseTrojanHeader(chunk, at);
-                    if (!tjResult.hasError) {
-                        protocolType = atob('dHJvamFu');
-                        const { addressType, port, hostname, rawClientData } = tjResult;
-                        await forwardTCP(addressType, hostname, port, rawClientData, serverSock, null, remoteConnWrapper);
-                        return;
+                const respHeader = new Uint8Array([version[0], 0]);
+                const rawData = chunk.slice(rawIndex);
+                if (isDnsQuery) return forwardUDP(rawData, serverSock, respHeader);
+                await forwardTCP(addressType, hostname, port, rawData, serverSock, respHeader, remoteConnWrapper);
+                            return;
+                        }
                     }
+                    
+                    if (et && chunk.byteLength >= 56) {
+                        const tjResult = await parseTrojanHeader(chunk, at);
+                        if (!tjResult.hasError) {
+                            protocolType = atob('dHJvamFu');
+                            const { addressType, port, hostname, rawClientData } = tjResult;
+                            await forwardTCP(addressType, hostname, port, rawClientData, serverSock, null, remoteConnWrapper);
+                            return;
+                        }
+                    }
+                    
+                    throw new Error('Invalid protocol or authentication failed');
                 }
-                
-                throw new Error('Invalid protocol or authentication failed');
-            }
         },
     })).catch((err) => { });
 
