@@ -139,90 +139,6 @@ export default {
       });
     }
 
-
-    // --- Backend Fake Host Test API (测试服务器是否支持 Fake Host / 方式 B) ---
-    // 访问路径：/api/test-fakehost
-    // 说明：
-    // - 会根据当前面板配置的 backendHost / backendPort / wsPath 构造后端地址
-    // - 分别用真实 Host（backendHost）和 Fake Host（fakeHost，如果有）去访问后端
-    // - 返回两个请求的 HTTP 状态码，用于判断后端是否接受 Fake Host
-    // - 一般来说：
-    //   * 真实 Host 返回 400 / 101 视为正常（代表 WS 入站存在）
-    //   * Fake Host 也返回 400 / 101，则说明后端支持方式 B
-    //   * Fake Host 返回 404 / 502 / 超时，则后端不支持方式 B
-    if (pathname === "/api/test-fakehost") {
-      // 仅已登录的管理员可以使用此测试接口
-      if (!(await isAuthenticated(request, env))) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { "content-type": "application/json; charset=utf-8" }
-        });
-      }
-
-      const cfg = await loadConfig(env);
-      if (!cfg.backendHost || !cfg.backendPort || !cfg.wsPath) {
-        return new Response(JSON.stringify({
-          error: "后端配置不完整，请先在面板中填写后端域名、端口和 WS 路径并保存。"
-        }), {
-          status: 400,
-          headers: { "content-type": "application/json; charset=utf-8" }
-        });
-      }
-
-      const backendUrl = `http://${cfg.backendHost}:${cfg.backendPort}${cfg.wsPath}`;
-
-      async function testHost(hostValue) {
-        const headers = new Headers();
-        headers.set("Host", hostValue);
-        // 尽量贴近方式 B 的请求头，但这里只做普通 HTTP 测试，不升级 WebSocket
-        if (cfg.ua && cfg.ua.trim()) {
-          headers.set("User-Agent", cfg.ua);
-        }
-        try {
-          const resp = await fetch(backendUrl, {
-            method: "GET",
-            headers
-          });
-          return {
-            host: hostValue,
-            status: resp.status,
-            ok: resp.status === 101 || resp.status === 400,
-            note: resp.status === 101
-              ? "返回 101，说明后端可以进行 WebSocket 升级。"
-              : (resp.status === 400
-                  ? "返回 400，通常表示 WS 入站存在（Host 被接受），但非 WebSocket 请求。"
-                  : "返回其它状态码，可能不支持该 Host 或路径。")
-          };
-        } catch (e) {
-          return {
-            host: hostValue,
-            error: String(e),
-            ok: false,
-            note: "请求失败，可能是端口未开放、防火墙拦截或网络不通。"
-          };
-        }
-      }
-
-      const results = [];
-      // 先测试真实 Host（backendHost）
-      results.push(await testHost(cfg.backendHost));
-
-      // 如有配置 Fake Host，则再测试 Fake Host
-      if (cfg.fakeHost && cfg.fakeHost.trim()) {
-        results.push(await testHost(cfg.fakeHost.trim()));
-      }
-
-      return new Response(JSON.stringify({
-        backendUrl,
-        backendHost: cfg.backendHost,
-        backendPort: cfg.backendPort,
-        wsPath: cfg.wsPath,
-        tested: results
-      }, null, 2), {
-        headers: { "content-type": "application/json; charset=utf-8" }
-      });
-    }
-
     // --- IP优选测速API（使用访问测速页面的IP进行测速） ---
     if (pathname === "/api/test-ips") {
       const authed = await isAuthenticated(request, env);
@@ -776,13 +692,10 @@ function renderAdminUI() {
     <div class="space-x-2">
       <a href="/speedtest" target="_blank" class="btn2">打开测速页面（新窗口）</a>
       <a href="/api/geo" target="_blank" class="btn2">查看当前线路 JSON 信息</a>
-      <a href="/api/test-fakehost" target="_blank" class="btn2">测试 Fake Host 支持情况</a>
     </div>
     <p class="text-xs text-slate-500 mt-2">
       建议先在这里跑一遍测速，确认入口机房（colo）是否为 HKG/TPE/SIN 等亚洲节点，再配合订阅里的“优选IP节点”进行真实体验对比。
     </p>
-    <button id="autoDiag" class="btn mt-3">⚙️ 一键自动诊断（方式 B / 落点 / 优选 IP）</button>
-    <pre id="diagOutput" class="mt-3 text-xs bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto"></pre>
   </div>
   <!-- 订阅区 -->
   <div class="card mb-6">
@@ -944,89 +857,12 @@ function renderAdminUI() {
 
     function showMsg(text, isError) {
       var m = document.getElementById("msg");
-      if (!m) return;
       m.textContent = text;
       m.style.color = isError ? "red" : "green";
-      setTimeout(function () { m.textContent = ""; }, 3000);
+      setTimeout(function(){ m.textContent = ""; }, 3000);
     }
-
-    // ---- 自动方式 B 诊断 / 优选 IP / Cloudflare 落点状态 ----
-    async function runAutoDiag() {
-      var outEl = document.getElementById("diagOutput");
-      if (!outEl) return;
-      outEl.textContent = "正在诊断当前 Worker / 后端，请稍候...\n";
-
-      try {
-        // 获取 Cloudflare 落点、评分、推荐 IP
-        var geoResp = await fetch("/api/geo");
-        var geo = await geoResp.json();
-
-        // 获取 Fake Host / 方式 B 兼容性
-        var fakeResp = await fetch("/api/test-fakehost");
-        var fake = await fakeResp.json();
-
-        var lines = [];
-
-        // Cloudflare 落点信息
-        lines.push("【Cloudflare 落点信息】");
-        if (geo.colo) lines.push("  入口机房(colo)： " + geo.colo);
-        if (geo.country || geo.city) {
-          lines.push("  访问来源： " + (geo.country || "") + " " + (geo.city || ""));
-        }
-        if (geo.score) lines.push("  综合评分： " + geo.score);
-        if (geo.comment) lines.push("  线路评语： " + geo.comment);
-
-        if (geo.ipSuggestions && geo.ipSuggestions.length) {
-          lines.push("");
-          lines.push("【推荐优选 IP 段】");
-          for (var i = 0; i < geo.ipSuggestions.length; i++) {
-            lines.push("  - " + geo.ipSuggestions[i]);
-          }
-        }
-
-        // 方式 B / Fake Host 诊断
-        lines.push("");
-        lines.push("【方式 B / Fake Host 兼容性】");
-        var fakeOk = false;
-        if (fake.tested && fake.tested.length) {
-          for (var j = 0; j < fake.tested.length; j++) {
-            var t = fake.tested[j];
-            var line = "  Host=" + t.host + " → status=" + t.status;
-            if (t.error) line += " error=" + t.error;
-            if (t.ok) line += " （OK）";
-            lines.push(line);
-            if (fake.fakeHost && t.host === fake.fakeHost && t.ok) {
-              fakeOk = true;
-            }
-          }
-        } else {
-          lines.push("未获取到 /api/test-fakehost 返回数据，请确认已保存后端配置。");
-        }
-
-        lines.push("");
-        if (fakeOk) {
-          lines.push("结论：当前 VPS 接受 Fake Host，适合启用方式 B（高级混淆）。");
-        } else {
-          lines.push("结论：当前 VPS 对 Fake Host 支持一般，建议使用方式 A（稳定模式）。");
-        }
-
-        outEl.textContent = lines.join("\n");
-      } catch (e) {
-        outEl.textContent = "诊断失败：" + e;
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      var btn = document.getElementById("autoDiag");
-      if (btn) {
-        btn.addEventListener("click", function () {
-          runAutoDiag();
-        });
-      }
-    });
 
     loadConfig();
-
   <\/script>
 </body>
 </html>`;
@@ -1315,81 +1151,7 @@ function renderSpeedtestPage() {
   <meta charset="UTF-8" />
   <title>Cloudflare Worker 速度测试工具</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com">
-    // ---- 自动方式 B 诊断 / 优选 IP / Cloudflare 落点状态 ----
-    async function runAutoDiag() {
-      var outEl = document.getElementById("diagOutput");
-      if (!outEl) return;
-      outEl.textContent = "正在诊断当前 Worker / 后端，请稍候...\n";
-
-      try {
-        // 获取 Cloudflare 落点、评分、推荐 IP
-        var geoResp = await fetch("/api/geo");
-        var geo = await geoResp.json();
-
-        // 获取 Fake Host / 方式 B 兼容性
-        var fakeResp = await fetch("/api/test-fakehost");
-        var fake = await fakeResp.json();
-
-        var lines = [];
-
-        // Cloudflare 落点信息
-        lines.push("【Cloudflare 落点信息】");
-        if (geo.colo) lines.push("  入口机房(colo)： " + geo.colo);
-        if (geo.country || geo.city) {
-          lines.push("  访问来源： " + (geo.country || "") + " " + (geo.city || ""));
-        }
-        if (geo.score) lines.push("  综合评分： " + geo.score);
-        if (geo.comment) lines.push("  线路评语： " + geo.comment);
-
-        if (geo.ipSuggestions && geo.ipSuggestions.length) {
-          lines.push("");
-          lines.push("【推荐优选 IP 段】");
-          for (var i = 0; i < geo.ipSuggestions.length; i++) {
-            lines.push("  - " + geo.ipSuggestions[i]);
-          }
-        }
-
-        // 方式 B / Fake Host 诊断
-        lines.push("");
-        lines.push("【方式 B / Fake Host 兼容性】");
-        if (fake.tested && fake.tested.length) {
-          var fakeOk = false;
-          for (var j = 0; j < fake.tested.length; j++) {
-            var t = fake.tested[j];
-            var line = "  Host=" + t.host + " → status=" + t.status;
-            if (t.error) line += " error=" + t.error;
-            if (t.ok) line += " （OK）";
-            lines.push(line);
-            if (t.host && fake.fakeHost && t.host === fake.fakeHost && t.ok) {
-              fakeOk = true;
-            }
-          }
-          lines.push("");
-          if (fakeOk) {
-            lines.push("结论：当前 VPS 接受 Fake Host，适合启用方式 B（高级混淆）。");
-          } else {
-            lines.push("结论：当前 VPS 对 Fake Host 支持一般，建议使用方式 A（稳定模式）。");
-          }
-        } else {
-          lines.push("未获取到 /api/test-fakehost 返回数据，请确认已保存后端配置。");
-        }
-
-        outEl.textContent = lines.join("\n");
-      } catch (e) {
-        outEl.textContent = "诊断失败：" + e;
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      var btn = document.getElementById("autoDiag");
-      if (btn) {
-        btn.addEventListener("click", function () {
-          runAutoDiag();
-        });
-      }
-    });
-<\/script>
+  <script src="https://cdn.tailwindcss.com"><\/script>
 </head>
 <body class="min-h-screen bg-slate-100 p-4">
   <div class="max-w-4xl mx-auto space-y-6">
