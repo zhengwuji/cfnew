@@ -944,12 +944,89 @@ function renderAdminUI() {
 
     function showMsg(text, isError) {
       var m = document.getElementById("msg");
+      if (!m) return;
       m.textContent = text;
       m.style.color = isError ? "red" : "green";
-      setTimeout(function(){ m.textContent = ""; }, 3000);
+      setTimeout(function () { m.textContent = ""; }, 3000);
     }
 
+    // ---- 自动方式 B 诊断 / 优选 IP / Cloudflare 落点状态 ----
+    async function runAutoDiag() {
+      var outEl = document.getElementById("diagOutput");
+      if (!outEl) return;
+      outEl.textContent = "正在诊断当前 Worker / 后端，请稍候...\n";
+
+      try {
+        // 获取 Cloudflare 落点、评分、推荐 IP
+        var geoResp = await fetch("/api/geo");
+        var geo = await geoResp.json();
+
+        // 获取 Fake Host / 方式 B 兼容性
+        var fakeResp = await fetch("/api/test-fakehost");
+        var fake = await fakeResp.json();
+
+        var lines = [];
+
+        // Cloudflare 落点信息
+        lines.push("【Cloudflare 落点信息】");
+        if (geo.colo) lines.push("  入口机房(colo)： " + geo.colo);
+        if (geo.country || geo.city) {
+          lines.push("  访问来源： " + (geo.country || "") + " " + (geo.city || ""));
+        }
+        if (geo.score) lines.push("  综合评分： " + geo.score);
+        if (geo.comment) lines.push("  线路评语： " + geo.comment);
+
+        if (geo.ipSuggestions && geo.ipSuggestions.length) {
+          lines.push("");
+          lines.push("【推荐优选 IP 段】");
+          for (var i = 0; i < geo.ipSuggestions.length; i++) {
+            lines.push("  - " + geo.ipSuggestions[i]);
+          }
+        }
+
+        // 方式 B / Fake Host 诊断
+        lines.push("");
+        lines.push("【方式 B / Fake Host 兼容性】");
+        var fakeOk = false;
+        if (fake.tested && fake.tested.length) {
+          for (var j = 0; j < fake.tested.length; j++) {
+            var t = fake.tested[j];
+            var line = "  Host=" + t.host + " → status=" + t.status;
+            if (t.error) line += " error=" + t.error;
+            if (t.ok) line += " （OK）";
+            lines.push(line);
+            if (fake.fakeHost && t.host === fake.fakeHost && t.ok) {
+              fakeOk = true;
+            }
+          }
+        } else {
+          lines.push("未获取到 /api/test-fakehost 返回数据，请确认已保存后端配置。");
+        }
+
+        lines.push("");
+        if (fakeOk) {
+          lines.push("结论：当前 VPS 接受 Fake Host，适合启用方式 B（高级混淆）。");
+        } else {
+          lines.push("结论：当前 VPS 对 Fake Host 支持一般，建议使用方式 A（稳定模式）。");
+        }
+
+        outEl.textContent = lines.join("\n");
+      } catch (e) {
+        outEl.textContent = "诊断失败：" + e;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var btn = document.getElementById("autoDiag");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          runAutoDiag();
+        });
+      }
+    });
+
     loadConfig();
+
   <\/script>
 </body>
 </html>`;
