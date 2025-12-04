@@ -634,35 +634,9 @@ function renderAdminUI() {
   <!-- WebSocket 模式 -->
   <div class="card mb-6">
     <h2 class="text-xl font-semibold mb-4">WebSocket 代理模式</h2>
-    <label class="flex items-center mb-2">
-      <input type="radio" name="wsMode" value="A" class="mr-2" checked>
-      <span>方式 A（稳定型，推荐）</span>
-    </label>
-    <p class="text-xs text-slate-500 mb-3 ml-6">
-      只转发 WebSocket 数据，不主动修改请求头，兼容性最高。
+    <p class="text-sm text-slate-600 mb-2">
+      使用稳定型模式，只转发 WebSocket 数据，不主动修改请求头，兼容性最高。
     </p>
-    <label class="flex items-center mb-2">
-      <input type="radio" name="wsMode" value="B" class="mr-2">
-      <span>方式 B（高级混淆，可修改 Host / UA / SNI）</span>
-    </label>
-    <p class="text-xs text-slate-500 ml-6">
-      若启用方式 B，建议在下方填写 Fake Host / SNI / User-Agent，用于伪装成 CDN / 正常网站。
-    </p>
-  </div>
-
-  <!-- 混淆设置 -->
-  <div class="card mb-6">
-    <h2 class="text-xl font-semibold mb-4">混淆设置（可选）</h2>
-    <label class="label">Fake Host</label>
-    <input id="fakeHost" class="input" placeholder="例如：cdn.jsdelivr.net">
-    <label class="label">SNI</label>
-    <input id="sni" class="input" placeholder="例如：www.cloudflare.com">
-    <label class="label">User-Agent</label>
-    <div class="flex items-center gap-2 mb-2">
-      <input id="ua" class="input flex-1" placeholder="例如：Mozilla/5.0 Chrome/120 或留空使用随机生成">
-      <button type="button" id="generateUA" class="btn2">🎲 随机生成</button>
-    </div>
-    <p class="text-xs text-slate-500">当 WS 模式选择为 B 时，这些字段将用于伪装请求头。留空则每次请求随机生成 User-Agent。</p>
   </div>
 
   <!-- 多节点 -->
@@ -725,36 +699,6 @@ function renderAdminUI() {
       document.getElementById("wsPath").value = cfg.wsPath || "/echws";
       document.getElementById("backendHost").value = cfg.backendHost || "";
       document.getElementById("backendPort").value = cfg.backendPort || "2082";
-      document.getElementById("fakeHost").value = cfg.fakeHost || "";
-      document.getElementById("sni").value = cfg.sni || "";
-      document.getElementById("ua").value = cfg.ua || "";
-
-      // 随机生成 User-Agent 按钮事件
-      var generateUABtn = document.getElementById("generateUA");
-      if (generateUABtn) {
-        generateUABtn.onclick = function() {
-          var uaList = [
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
-            "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-          ];
-          var randomUA = uaList[Math.floor(Math.random() * uaList.length)];
-          document.getElementById("ua").value = randomUA;
-        };
-      }
-
-      if (cfg.mode === "B") {
-        var b = document.querySelector("input[name='wsMode'][value='B']");
-        if (b) b.checked = true;
-      } else {
-        var a = document.querySelector("input[name='wsMode'][value='A']");
-        if (a) a.checked = true;
-      }
 
       if (cfg.nodes && Array.isArray(cfg.nodes)) {
         cfg.nodes.forEach(function(n){ addNodeUI(n); });
@@ -802,17 +746,11 @@ function renderAdminUI() {
     document.getElementById("addNode").onclick = function(){ addNodeUI(); };
 
     document.getElementById("save").onclick = async function () {
-      var modeInput = document.querySelector("input[name='wsMode']:checked");
-      var mode = modeInput ? modeInput.value : "A";
-
       var uuidEl = document.getElementById("uuid");
       var workerHostEl = document.getElementById("workerHost");
       var backendHostEl = document.getElementById("backendHost");
       var backendPortEl = document.getElementById("backendPort");
       var wsPathEl = document.getElementById("wsPath");
-      var fakeHostEl = document.getElementById("fakeHost");
-      var sniEl = document.getElementById("sni");
-      var uaEl = document.getElementById("ua");
 
       if (!uuidEl.value) return showMsg("❌ UUID 不能为空", true);
       if (!workerHostEl.value) return showMsg("❌ Worker 域名不能为空", true);
@@ -834,10 +772,7 @@ function renderAdminUI() {
         wsPath: wsPathEl.value,
         backendHost: backendHostEl.value,
         backendPort: backendPortEl.value,
-        fakeHost: fakeHostEl.value,
-        sni: sniEl.value,
-        ua: uaEl.value,
-        mode: mode,
+        mode: "A",
         nodes: nodesData
       };
 
@@ -881,9 +816,6 @@ async function loadConfig(env) {
       wsPath: "/echws",
       backendHost: "",
       backendPort: "2082",
-      fakeHost: "",
-      sni: "",
-      ua: "",
       mode: "A",
       nodes: []
     };
@@ -942,8 +874,8 @@ function buildVlessUrl(cfg, hostOverride = null, name = "Node") {
     security: "tls",
     type: "ws",
     path: cfg.wsPath,
-    host: cfg.fakeHost || cfg.workerHost,
-    sni: cfg.sni || cfg.workerHost
+    host: cfg.workerHost,
+    sni: cfg.workerHost
   });
   return `vless://${cfg.uuid}@${host}:443?${params.toString()}#${encodeURIComponent(name)}`;
 }
@@ -970,8 +902,8 @@ function generateV2raySub(cfg, ipOption, colo = "", country = "", clientIP = "")
       security: "tls",
       type: "ws",
       path: "/invalid",
-      host: "invalid.example.com",
-      sni: "invalid.example.com"
+      host: cfg.workerHost || "invalid.example.com",
+      sni: cfg.workerHost || "invalid.example.com"
     });
     const infoUrl = `vless://${cfg.uuid || "00000000-0000-0000-0000-000000000000"}@0.0.0.0:0?${infoParams.toString()}#${encodeURIComponent(infoName)}`;
     list.push(infoUrl);
@@ -1360,13 +1292,13 @@ function generateSingbox(cfg) {
     uuid: cfg.uuid,
     tls: {
       enabled: true,
-      server_name: cfg.sni || cfg.workerHost
+      server_name: cfg.workerHost
     },
     transport: {
       type: "ws",
       path: cfg.wsPath,
       headers: {
-        Host: cfg.fakeHost || cfg.workerHost
+        Host: cfg.workerHost
       }
     }
   });
@@ -1382,13 +1314,13 @@ function generateSingbox(cfg) {
         uuid: cfg.uuid,
         tls: {
           enabled: true,
-          server_name: cfg.sni || n.host
+          server_name: n.host
         },
         transport: {
           type: "ws",
           path: cfg.wsPath,
           headers: {
-            Host: cfg.fakeHost || n.host
+            Host: n.host
           }
         }
       });
@@ -1465,17 +1397,9 @@ async function generateQRCode(cfg) {
 }
 
 // ===============================================================
-// WebSocket Proxy (Mode A & B)
+// WebSocket Proxy (Mode A: Stable)
 // ===============================================================
 async function handleWS(request, cfg) {
-  if (cfg.mode === "B") {
-    return handleWS_B(request, cfg);
-  }
-  return handleWS_A(request, cfg);
-}
-
-// --- Mode A: Stable ---
-async function handleWS_A(request, cfg) {
   const backendUrl = `http://${cfg.backendHost}:${cfg.backendPort}${cfg.wsPath}`;
   const headers = new Headers(request.headers);
   headers.set("Host", cfg.backendHost);
@@ -1490,52 +1414,11 @@ async function handleWS_A(request, cfg) {
   try {
     resp = await fetch(backendReq);
   } catch (e) {
-    return new Response("Backend connection failed (mode A)", { status: 502 });
+    return new Response("Backend connection failed", { status: 502 });
   }
 
   if (resp.status !== 101) {
-    return new Response("WebSocket upgrade failed (mode A)", { status: 502 });
-  }
-  return resp;
-}
-
-// --- Mode B: Obfuscated ---
-async function handleWS_B(request, cfg) {
-  const backendUrl = `http://${cfg.backendHost}:${cfg.backendPort}${cfg.wsPath}`;
-  const headers = new Headers(request.headers);
-
-  if (cfg.fakeHost) {
-    headers.set("Host", cfg.fakeHost);
-  }
-  // User-Agent: 如果配置了则使用配置的，否则使用随机生成的
-  if (cfg.ua && cfg.ua.trim()) {
-    headers.set("User-Agent", cfg.ua);
-  } else {
-    // 使用随机生成的 User-Agent，提高隐蔽性
-    headers.set("User-Agent", generateRandomUserAgent());
-  }
-  if (cfg.sni) {
-    headers.set("CF-Connecting-SNI", cfg.sni);
-  }
-
-  headers.set("X-Forwarded-For", "1.1.1.1");
-  headers.set("X-Real-IP", "1.1.1.1");
-
-  const backendReq = new Request(backendUrl, {
-    method: request.method,
-    headers,
-    body: request.body
-  });
-
-  let resp;
-  try {
-    resp = await fetch(backendReq);
-  } catch (e) {
-    return new Response("Backend connection failed (mode B)", { status: 503 });
-  }
-
-  if (resp.status !== 101) {
-    return new Response("WebSocket upgrade failed (mode B)", { status: 502 });
+    return new Response("WebSocket upgrade failed", { status: 502 });
   }
   return resp;
 }
