@@ -475,8 +475,8 @@ export default {
             // 保存原始环境变量u的值（支持大小写），用于订阅路径验证
             envUKey = (env.u || env.U || defaultUUID);
 
-            // 检查是否设置了自定义UUID（用于VLESS协议）
-            const customUUID = getConfigValue('uuid', env.uuid || env.UUID);
+            // 检查是否设置了自定义UUID（用于VLESS协议），若未设置则自动Fallback到环境变量u（envUKey）
+            const customUUID = getConfigValue('uuid', env.uuid || env.UUID || envUKey);
             if (customUUID && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(customUUID)) {
                 // 如果设置了有效的自定义UUID，使用它
                 at = customUUID.toLowerCase();
